@@ -1,6 +1,10 @@
 package delivery.test;
 
+import com.codeborne.selenide.logevents.SelenideLogger;
 import delivery.data.NoValidDataGenerator;
+import io.qameta.allure.selenide.AllureSelenide;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import delivery.data.DataGenerator;
@@ -19,11 +23,21 @@ class DeliveryTest {
     DataGenerator.UserInfo validUser = DataGenerator.Registration.generateUser("ru");
     NoValidDataGenerator.UserNoValidInfo noValidEnUser = NoValidDataGenerator.Registration.generateUser("en");
 
+    @BeforeAll
+    static void setUpAll() {
+        SelenideLogger.addListener("allure", new AllureSelenide());
+    }
+
     @BeforeEach
     void setup() {
         open("http://localhost:9999");
         $("[data-test-id=date] .input__control").sendKeys(Keys.CONTROL + "A");
         $("[data-test-id=date] .input__control").sendKeys(Keys.BACK_SPACE);
+    }
+
+    @AfterAll
+    static void tearDownAll() {
+        SelenideLogger.removeListener("allure");
     }
 
     @Test
